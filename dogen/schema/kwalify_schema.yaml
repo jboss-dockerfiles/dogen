@@ -7,26 +7,20 @@ map:
   description: {type: text}
   user: {type: text}
   cmd:
-    type: seq
-    sequence:
+    seq:
       - type: str
   entrypoint:
-    type: seq
-    sequence:
+    seq:
       - type: str
   labels:
-    type: seq
-    sequence:
-      - type: map
-        mapping:
+    seq:
+      - map:
           name: {type: str, required: True}
           value: {type: str, required: True}
           description: {type: str}
   envs:
-    type: seq
-    sequence:
-      - type: map
-        mapping:
+    seq:
+      - map:
           name: {type: str, required: True}
           value: {type: any}
           example: {type: any}
@@ -63,7 +57,6 @@ map:
          package: {type: str}
          exec: {type: str}
          user: {type: text}
-  cct: {type: any}
   maintainer: {type: str}
   workdir: {type: str}
   sources:
@@ -80,3 +73,24 @@ map:
   packages:
     seq:
       - {type: str}
+  cct:
+    seq:
+    - map:
+        name: {type: str, required: True}
+        description: {type: str}
+        environment:
+          map:
+            =: {type: str}
+        modules:
+          seq:
+            - map:
+                url: {type: str, required: True}
+                version: {type: str}
+        changes:
+          seq:
+          - map:
+              =:
+               seq:
+               - map:
+                   =:
+                     type: text
