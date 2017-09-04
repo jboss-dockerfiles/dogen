@@ -170,7 +170,7 @@ class TestDockerfile(unittest.TestCase):
         generator.configure()
         generator.render_from_template()
 
-        self.assertEqual(generator.cfg['labels'], [{'name': 'description', 'value': 'This is a nice image'}])
+        self.assertEqual(generator.cfg['labels'], [{'name': 'description', 'value': 'This is a nice image'}, {'name': 'summary', 'value': 'This is a nice image'}])
 
         with open(os.path.join(self.target, "Dockerfile"), "r") as f:
             dockerfile = f.read()
