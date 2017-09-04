@@ -232,13 +232,24 @@ class Generator(object):
         if not self.cfg.get('labels'):
             self.cfg['labels'] = []
 
+        labels = {}
+
+        for label in self.cfg.get('labels'):
+            labels[label['name']] = label['value']
+
         # https://github.com/jboss-dockerfiles/dogen/issues/129
         # https://github.com/jboss-dockerfiles/dogen/issues/137
         for label in ['maintainer', 'description']:
             value = self.cfg.get(label)
 
-            if value:
+            if value and not label in labels:
                 self.cfg['labels'].append({'name': label, 'value': value})
+                labels[label] = value
+
+        # https://github.com/jboss-dockerfiles/dogen/issues/195
+        if 'summary' not in labels:
+            if 'description' in labels:
+                self.cfg['labels'].append({'name': 'summary', 'value': labels.get('description')})
 
         if self.template:
             template_file = self.template
