@@ -1,5 +1,5 @@
 import os
-import shutil
+import re
 import subprocess
 
 from dogen.tools import Tools, Chdir
@@ -15,6 +15,7 @@ class DistGitPlugin(Plugin):
         parser.add_argument('--dist-git-enable', action='store_true', help='Enables dist-git plugin')
         parser.add_argument('--dist-git-assume-yes', action='store_true', help='Skip interactive mode and answer all question with "yes"')
         parser.add_argument('--dist-git-scratch', action='store_true', help='Scratch build')
+        parser.add_argument('--dist-git-tech-preview', action='store_true', help='Change the type of image to tech-preview')
         return parser
 
     def __init__(self, dogen, args):
@@ -43,6 +44,27 @@ class DistGitPlugin(Plugin):
 
         self.git.prepare()
         self.git.clean()
+
+    def before_sources(self, cfg):
+        if not self.args.dist_git_enable:
+            return
+
+        if not self.args.dist_git_tech_preview:
+            return
+
+        name = cfg.get('name')
+        family, name = name.split('/')
+        tech_preview_name = "%s-tech-preview/%s" % (family, name)
+
+        self.log.info("Generating tech-preview image, updating image name to: %s" % tech_preview_name)
+
+        cfg['name'] = tech_preview_name
+
+        r = re.search("(ce-\d+\.\d+(-openshift)?-\w+-\d+\.\d+)(-.*)", self.branch)
+
+        if r:
+            self.branch = "%s-tech-preview%s" % (r.group(1), r.group(3))
+            self.log.info("Generating tech-preview image, updating branch name to: %s" % self.branch)
 
     def after_sources(self, files):
         if not self.args.dist_git_enable:
