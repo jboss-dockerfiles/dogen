@@ -60,12 +60,6 @@ class DistGitPlugin(Plugin):
 
         cfg['name'] = tech_preview_name
 
-        r = re.search("(ce-\d+\.\d+(-openshift)?-\w+-\d+\.\d+)(-.*)", self.branch)
-
-        if r:
-            self.branch = "%s-tech-preview%s" % (r.group(1), r.group(3))
-            self.log.info("Generating tech-preview image, updating branch name to: %s" % self.branch)
-
     def after_sources(self, files):
         if not self.args.dist_git_enable:
             return
