@@ -25,10 +25,15 @@ class TemplateHelper(object):
 
     def component(self, name):
         """
-        Returns the vomponent name based on the image name
+        Returns the component name based on the image name
         """
 
-        return "%s" % re.sub(r'^(.*)/(.*)$', r'\1-\2-docker', name)
+        r = re.sub(r'^(.*)/(.*)$', r'\1-\2-docker', name)
+
+        # we don't want -tech-preview to be in component fields
+        r = r.replace("-tech-preview",'')
+
+        return "%s" % r
 
     def base_image(self, base_image, version):
         """
